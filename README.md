@@ -7,7 +7,7 @@
 
 ### 1. 使用Anaconda创建虚拟环境
 ```bash
-conda create -n youtube-env python=3.9
+conda create -n youtube-env python=3.10
 conda activate youtube-env
 ```
 
@@ -47,4 +47,4 @@ YOUTUBE_API_KEY=your_api_key_here
 
 ## 运行项目
 ```bash
-python main.py
+uvicorn main:app --reload
