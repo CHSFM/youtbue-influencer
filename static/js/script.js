@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     row.innerHTML = `
                         <td data-label="标题">${video.title}</td>
                         <td data-label="描述">${video.description}</td>
+                        <td data-label="发布时间">${new Date(video.publishedAt).toLocaleString()}</td>
                         <td data-label="标签">${video.tags.join(', ')}</td>
                         <td data-label="观看次数">${video.views}</td>
                         <td data-label="点赞数">${video.likes}</td>
@@ -171,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
             videos.push({
                 '视频标题': cells[0].textContent,
                 '描述': cells[1].textContent,
-                '标签': cells[2].textContent,
+                '发布时间': cells[2].textContent,
+                '标签': cells[3].textContent,
                 '观看次数': cells[3].textContent,
                 '点赞数': cells[4].textContent,
                 '评论数': cells[5].textContent,

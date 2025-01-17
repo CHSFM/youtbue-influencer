@@ -80,6 +80,7 @@ async def get_channel_info(channel_id: str, request: ChannelRequest):
             "duration": video["contentDetails"]["duration"],
             "category": video["snippet"]["categoryId"],
             "status": video["status"]["privacyStatus"],
+            "publishedAt": video["snippet"]["publishedAt"],
             "id": video["id"]
         })
     
