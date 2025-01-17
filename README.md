@@ -18,12 +18,9 @@ pip install -r requirements.txt
 
 ## 配置文件说明
 
-### .env 文件配置
-1. 复制.env.example文件为.env
-2. 在.env文件中配置以下内容：
-```
-YOUTUBE_API_KEY=your_api_key_here
-```
+### API Key 使用说明
+1. 启动应用后，在首页输入框中输入您的YouTube API Key
+2. 点击提交按钮即可开始使用
 
 ## YouTube Data API v3 使用指南
 
