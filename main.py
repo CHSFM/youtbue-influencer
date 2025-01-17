@@ -19,7 +19,10 @@ templates = Jinja2Templates(directory="templates")
 # 获取YouTube API密钥
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 if not YOUTUBE_API_KEY:
-    raise ValueError("请在.env文件中设置YOUTUBE_API_KEY")
+    # 从网页表单获取API Key
+    api_key = request.form.get('api_key')
+    if not api_key:
+        raise ValueError("请在网页表单中输入YouTube API Key")
 
 # 初始化YouTube API服务
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
