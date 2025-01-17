@@ -85,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 document.getElementById('videosTable').classList.add('hidden');
             }
+
+            // 显示导出按钮
+            document.getElementById('exportBtn').classList.remove('hidden');
         } catch (error) {
             console.error('Error:', error);
             alert('获取频道信息失败，请稍后重试');
@@ -123,6 +126,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('获取评论失败，请稍后重试');
             }
         }
+    });
+
+    // 导出按钮点击事件
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        const channelTitle = document.getElementById('channelTitle').textContent;
+        const channelInfo = {
+            '频道名称': channelTitle,
+            '创建时间': document.getElementById('createdAt').textContent,
+            '订阅者人数': document.getElementById('subscribers').textContent
+        };
+
+        const videos = [];
+        const rows = document.querySelectorAll('#videosBody tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            videos.push({
+                '视频标题': cells[0].textContent,
+                '描述': cells[1].textContent,
+                '标签': cells[2].textContent,
+                '观看次数': cells[3].textContent,
+                '点赞数': cells[4].textContent,
+                '评论数': cells[5].textContent,
+                '时长': cells[6].textContent,
+                '分类': cells[7].textContent,
+                '状态': cells[8].textContent
+            });
+        });
+
+        // 合并频道信息和视频信息
+        const data = videos.map(video => ({
+            ...channelInfo,
+            ...video
+        }));
+
+        // 生成文件名
+        const today = new Date();
+        const dateStr = today.getFullYear() + 
+                       String(today.getMonth() + 1).padStart(2, '0') + 
+                       String(today.getDate()).padStart(2, '0');
+        const filename = `${channelTitle}_${dateStr}`;
+
+        // 导出Excel
+        exportToExcel(data, filename);
     });
 });
 
