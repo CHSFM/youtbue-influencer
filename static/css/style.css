@@ -149,3 +149,48 @@ tr:hover {
         font-weight: bold;
     }
 }
+
+/* 新增配置区域样式 */
+.config-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.config-section h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.config-item {
+    margin-bottom: 1rem;
+}
+
+.config-item label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #666;
+}
+
+.config-item input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.config-item input[type="number"] {
+    max-width: 200px;
+}
+
+@media (max-width: 600px) {
+    .config-item input[type="number"] {
+        max-width: 100%;
+    }
+}

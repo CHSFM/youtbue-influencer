@@ -9,6 +9,23 @@
 <body>
     <div class="container">
         <h1>YouTube频道信息查询</h1>
+        
+        <div class="config-section">
+            <h2>公共参数配置</h2>
+            <div class="config-item">
+                <label for="apiKey">YouTube Data API Key:</label>
+                <input type="text" id="apiKey" placeholder="输入API Key" required>
+            </div>
+            <div class="config-item">
+                <label for="videoCount">获取视频数:</label>
+                <input type="number" id="videoCount" value="50" min="1" max="50">
+            </div>
+            <div class="config-item">
+                <label for="commentCount">获取评论数:</label>
+                <input type="number" id="commentCount" value="200" min="1" max="200">
+            </div>
+        </div>
+
         <form id="channelForm">
             <input type="text" id="channelId" placeholder="输入YouTube频道ID" required>
             <button type="submit">查询</button>

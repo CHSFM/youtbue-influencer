@@ -13,11 +13,29 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        // 获取配置值
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const videoCount = parseInt(document.getElementById('videoCount').value);
+        const commentCount = parseInt(document.getElementById('commentCount').value);
+        
         const channelId = document.getElementById('channelId').value.trim();
-        if (!channelId) return;
+        if (!channelId || !apiKey) {
+            alert('请填写频道ID和API Key');
+            return;
+        }
         
         try {
-            const response = await fetch(`/channel/${channelId}`);
+            const response = await fetch(`/channel/${channelId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    apiKey,
+                    videoCount,
+                    commentCount
+                })
+            });
             const data = await response.json();
             
             if (data.error) {
@@ -101,7 +119,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const videoTitle = e.target.closest('tr').querySelector('td').textContent;
             
             try {
-                const response = await fetch(`/comments/${videoId}`);
+                const response = await fetch(`/comments/${videoId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        apiKey: document.getElementById('apiKey').value.trim(),
+                        commentCount: parseInt(document.getElementById('commentCount').value)
+                    })
+                });
                 const comments = await response.json();
                 
                 if (comments.error) {

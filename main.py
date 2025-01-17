@@ -28,8 +28,15 @@ youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/channel/{channel_id}")
-async def get_channel_info(channel_id: str):
+from pydantic import BaseModel
+
+class ChannelRequest(BaseModel):
+    apiKey: str
+    videoCount: int
+    commentCount: int
+
+@app.post("/channel/{channel_id}")
+async def get_channel_info(channel_id: str, request: ChannelRequest):
     # 获取频道信息
     channel_request = youtube.channels().list(
         part="snippet,statistics",
@@ -46,7 +53,7 @@ async def get_channel_info(channel_id: str):
     search_request = youtube.search().list(
         part="snippet",
         channelId=channel_id,
-        maxResults=50,
+        maxResults=request.videoCount,
         order="date",
         type="video"
     )
@@ -88,14 +95,21 @@ async def get_channel_info(channel_id: str):
         "video_list": videos
     }
 
-@app.get("/comments/{video_id}")
-async def get_video_comments(video_id: str):
+class CommentRequest(BaseModel):
+    apiKey: str
+    commentCount: int
+
+@app.post("/comments/{video_id}")
+async def get_video_comments(video_id: str, request: Request, comment_request: CommentRequest):
     comments = []
     next_page_token = None
     
-    # 最多获取200条评论
-    while len(comments) < 200:
-        request = youtube.commentThreads().list(
+    # 最多获取配置数量的评论
+    # 使用传入的API Key初始化YouTube服务
+    youtube_comments = build("youtube", "v3", developerKey=comment_request.apiKey)
+    
+    while len(comments) < comment_request.commentCount:
+        request = youtube_comments.commentThreads().list(
             part="snippet",
             videoId=video_id,
             maxResults=100,
@@ -113,7 +127,7 @@ async def get_video_comments(video_id: str):
                 "likeCount": comment["likeCount"]
             })
             
-            if len(comments) >= 200:
+            if len(comments) >= comment_request.commentCount:
                 break
                 
         next_page_token = response.get("nextPageToken")
