@@ -89,7 +89,6 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 2rem;
 }
 
 th, td {
@@ -166,12 +165,24 @@ tr:hover {
     font-size: 1.2rem;
 }
 
+.config-row {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+#apiKey {
+    margin-top: 12px;
+}
+
 .config-item {
+    flex: 1;
+    display: inline-block;
     margin-bottom: 1rem;
+    margin-right: 20px;
 }
 
 .config-item label {
-    display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
     color: #666;
@@ -193,4 +204,10 @@ tr:hover {
     .config-item input[type="number"] {
         max-width: 100%;
     }
+}
+
+.video-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
