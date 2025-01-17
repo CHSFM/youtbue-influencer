@@ -10,13 +10,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('channelForm');
     const resultDiv = document.getElementById('result');
     
+    // 从localStorage加载API Key
+    const savedApiKey = localStorage.getItem('youtubeApiKey');
+    if (savedApiKey) {
+        document.getElementById('apiKey').value = savedApiKey;
+    }
+    
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         // 获取配置值
-        const apiKey = document.getElementById('apiKey').value.trim();
+        const apiKeyInput = document.getElementById('apiKey');
+        const apiKey = apiKeyInput.value.trim();
         const videoCount = parseInt(document.getElementById('videoCount').value);
         const commentCount = parseInt(document.getElementById('commentCount').value);
+        
+        // 保存API Key到localStorage
+        if (apiKey) {
+            localStorage.setItem('youtubeApiKey', apiKey);
+        }
         
         const channelId = document.getElementById('channelId').value.trim();
         if (!channelId || !apiKey) {
