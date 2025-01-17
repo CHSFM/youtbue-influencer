@@ -1,3 +1,11 @@
+// 导出Excel文件
+function exportToExcel(data, filename) {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "评论");
+    XLSX.writeFile(workbook, `${filename}.xlsx`);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('channelForm');
     const resultDiv = document.getElementById('result');
@@ -67,6 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td data-label="时长">${formatDuration(video.duration)}</td>
                         <td data-label="分类">${video.category}</td>
                         <td data-label="状态">${video.status}</td>
+                        <td data-label="操作">
+                            <button class="get-comments-btn" data-video-id="${video.id}">获取评论</button>
+                        </td>
                     `;
                     
                     videosBody.appendChild(row);
@@ -79,4 +90,43 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('获取频道信息失败，请稍后重试');
         }
     });
+
+    // 获取评论按钮点击事件
+    document.addEventListener('click', async function(e) {
+        if (e.target.classList.contains('get-comments-btn')) {
+            const videoId = e.target.dataset.videoId;
+            const videoTitle = e.target.closest('tr').querySelector('td').textContent;
+            
+            try {
+                const response = await fetch(`/comments/${videoId}`);
+                const comments = await response.json();
+                
+                if (comments.error) {
+                    alert(comments.error);
+                    return;
+                }
+
+                // 格式化评论数据
+                const formattedComments = comments.map(comment => ({
+                    视频名称: videoTitle,
+                    评论人名称: comment.author,
+                    评论时间: new Date(comment.publishedAt).toLocaleString(),
+                    评论内容: comment.text,
+                    评论点赞数: comment.likeCount
+                }));
+
+                // 导出Excel
+                exportToExcel(formattedComments, `${videoTitle}_评论`);
+                
+            } catch (error) {
+                console.error('获取评论失败:', error);
+                alert('获取评论失败，请稍后重试');
+            }
+        }
+    });
 });
+
+// 加载xlsx库
+const script = document.createElement('script');
+script.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+document.head.appendChild(script);

@@ -72,7 +72,8 @@ async def get_channel_info(channel_id: str):
             "comments": video["statistics"].get("commentCount", 0),
             "duration": video["contentDetails"]["duration"],
             "category": video["snippet"]["categoryId"],
-            "status": video["status"]["privacyStatus"]
+            "status": video["status"]["privacyStatus"],
+            "id": video["id"]
         })
     
     return {
@@ -86,3 +87,37 @@ async def get_channel_info(channel_id: str):
         "thumbnail": channel_info["snippet"]["thumbnails"]["high"]["url"],
         "video_list": videos
     }
+
+@app.get("/comments/{video_id}")
+async def get_video_comments(video_id: str):
+    comments = []
+    next_page_token = None
+    
+    # 最多获取200条评论
+    while len(comments) < 200:
+        request = youtube.commentThreads().list(
+            part="snippet",
+            videoId=video_id,
+            maxResults=100,
+            pageToken=next_page_token,
+            textFormat="plainText"
+        )
+        response = request.execute()
+        
+        for item in response["items"]:
+            comment = item["snippet"]["topLevelComment"]["snippet"]
+            comments.append({
+                "author": comment["authorDisplayName"],
+                "publishedAt": comment["publishedAt"],
+                "text": comment["textDisplay"],
+                "likeCount": comment["likeCount"]
+            })
+            
+            if len(comments) >= 200:
+                break
+                
+        next_page_token = response.get("nextPageToken")
+        if not next_page_token:
+            break
+            
+    return comments
