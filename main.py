@@ -16,16 +16,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # 模板引擎
 templates = Jinja2Templates(directory="templates")
 
-# 获取YouTube API密钥
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-if not YOUTUBE_API_KEY:
-    # 从网页表单获取API Key
-    api_key = request.form.get('api_key')
-    if not api_key:
-        raise ValueError("请在网页表单中输入YouTube API Key")
-
 # 初始化YouTube API服务
-youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
+youtube = None
+
+def get_youtube_service(api_key: str):
+    if not api_key:
+        raise ValueError("请提供有效的YouTube API Key")
+    return build("youtube", "v3", developerKey=api_key)
 
 @app.get("/")
 async def read_root(request: Request):
@@ -40,6 +37,9 @@ class ChannelRequest(BaseModel):
 
 @app.post("/channel/{channel_id}")
 async def get_channel_info(channel_id: str, request: ChannelRequest):
+    # 初始化YouTube服务
+    youtube = get_youtube_service(request.apiKey)
+    
     # 获取频道信息
     channel_request = youtube.channels().list(
         part="snippet,statistics",
